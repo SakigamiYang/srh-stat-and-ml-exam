@@ -73,4 +73,4 @@ Code: [raw_data_to_samples.ipynb](notebooks/raw_data_to_samples.ipynb)
 ### 5.1 Unsupervised Learning Samples
 
 - Data Contract: [diabetes-daily-features.md](docs/data-contracts/unsupervised-learning/diabetes-daily-features.md)
-- Shape: 3378 x 226
+- Shape: `(3378, 226)`
