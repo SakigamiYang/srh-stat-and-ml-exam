@@ -47,7 +47,6 @@ Each code produces these numeric fields (nullable when code absent that day):
 | `bg_{code}_count`           |   int |    no    | #measurements for that code that day |
 | `bg_{code}_min/max`         | float |   yes    | Min/max glucose value                |
 | `bg_{code}_mean/median/std` | float |   yes    | Summary statistics                   |
-| `bg_{code}_p10/p25/p75/p90` | float |   yes    | Quantiles                            |
 | `bg_{code}_first/last`      | float |   yes    | First/last value by time order       |
 | `bg_{code}_range`           | float |   yes    | `max - min`                          |
 
@@ -57,7 +56,6 @@ Each code produces these numeric fields (nullable when code absent that day):
 |----------------------------------|------:|:--------:|------------------------------------------------|
 | `bg_all_count`                   |   int |    no    | Total glucose measurement count (all bg codes) |
 | `bg_all_min/max/mean/median/std` | float |   yes    | Stats across all bg values                     |
-| `bg_all_p25/p75`                 | float |   yes    | Quantiles                                      |
 | `bg_all_range`                   | float |   yes    | `max - min`                                    |
 
 ### Insulin feature family (per code)
