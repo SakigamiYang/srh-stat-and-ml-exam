@@ -8,7 +8,20 @@
 
 ## 2. Problem Statement
 
-[TODO]
+This project explores the **UCI Diabetes** dataset, which contains irregular, 
+event-based records of daily diabetes management behaviors and blood glucose outcomes across multiple patients. 
+The data are aggregated at the daily level to transform heterogeneous event sequences into fixed-length feature vectors 
+summarizing glycemic level and variability, treatment intensity, monitoring activity, and risk-related events.
+
+**Unsupervised learning** methods are applied to these daily representations 
+to identify latent behavioral–outcome regimes, such as stable days, intervention-heavy days, 
+and highly unstable high-risk days, without relying on predefined labels.
+
+**Supervised learning** methods are applied directly to the event-level data to 
+predict the next blood glucose measurement based on recent management actions and physiological context. 
+By framing each glucose measurement as a prediction target and using preceding insulin, meal, exercise, 
+and glucose events within a fixed lookback window as input features, the task evaluates 
+how well short-term glucose dynamics can be inferred from logged behavioral sequences.
 
 ---
 
@@ -74,3 +87,9 @@ Code: [raw_data_to_samples.ipynb](notebooks/raw_data_to_samples.ipynb)
 
 - Data Contract: [diabetes-daily-features.md](docs/data-contracts/unsupervised-learning/diabetes-daily-features.md)
 - Shape: `(3378, 170)`
+
+### 5.2 Supervised Learning Samples
+
+- Data Contract: [diabetes-event-window-features.md](docs/data-contracts/supervised-learning/diabetes-event-window-features.md)
+- Shape: `(10612, 30)`
+- Target: `y_next_glucose`

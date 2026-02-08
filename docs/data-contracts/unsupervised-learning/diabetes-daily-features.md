@@ -1,4 +1,4 @@
-# Data Contract: `diabetes_daily_features` (Wide Daily Feature Table)
+# Data Contract: `diabetes-daily-features` (Wide Daily Feature Table)
 
 **Purpose:** One row per **patient-file (`id`) × calendar day (`date`)**, converting the original event log (code/value) into a feature matrix suitable for **unsupervised learning** (clustering, anomaly detection, similarity search).
 
