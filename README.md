@@ -93,3 +93,18 @@ Code: [raw_data_to_samples.ipynb](notebooks/raw_data_to_samples.ipynb)
 - Data Contract: [diabetes-event-window-features.md](docs/data-contracts/supervised-learning/diabetes-event-window-features.md)
 - Shape: `(10612, 30)`
 - Target: `y_next_glucose`
+
+---
+
+## 6. Learning Results
+
+### 6.1 Unsupervised Learning Results
+
+Daily feature vectors were analyzed using **UMAP** for dimensionality reduction followed by **DBSCAN** for clustering. 
+Model selection jointly considered the number of clusters, noise fraction, and Silhouette score.
+
+With `eps = 1.0` and `min_samples = 10`, DBSCAN identified **6 clusters** with **near-zero noise** 
+and a **Silhouette score of approximately 0.43**, indicating a well-separated structure. 
+The clusters differ systematically in glucose level and variability, insulin usage, event frequency, 
+and daily activity span, suggesting distinct behavioral–outcome regimes 
+such as stable days, intervention-heavy days, and more volatile patterns.
