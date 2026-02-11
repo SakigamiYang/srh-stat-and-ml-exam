@@ -175,3 +175,110 @@ Denoising was performed using an interquartile range (IQR)–based clipping stra
 where values outside ([Q1 − 1.5 \cdot IQR, ; Q3 + 1.5 \cdot IQR]) were clipped to the corresponding bounds. 
 This approach preserves all samples while mitigating the influence of extreme values 
 in a statistically principled manner.
+
+---
+
+## 8. Potential Improvements and Alternative Problem Formulations
+
+The supervised learning results indicate that predicting the exact next blood glucose value 
+from short-term behavioral logs is inherently challenging. Blood glucose dynamics 
+are influenced by many unobserved physiological and contextual factors, 
+and the available event-level features provide only a partial view of the underlying state. 
+As a result, model performance is constrained by information limits rather than by the choice of model alone.
+
+To address this limitation, several alternative problem formulations are proposed as future improvements. 
+These approaches aim to reduce target noise and increase predictability by redefining the learning objective.
+
+### 8.1 Predicting Glucose Change (Δ Glucose)
+
+Instead of predicting the absolute next glucose value, the task can be reformulated to predict the change in glucose 
+relative to the most recent measurement:
+
+$$
+\Delta BG = BG_{next} - BG_{last}
+$$
+
+This formulation removes individual baseline effects and focuses the model on short-term glucose dynamics. 
+It is more closely aligned with a state-transition perspective 
+and is typically more stable than absolute-value regression.
+
+**Pros:**
+
+- Reduces inter-individual variability
+- Often yields higher explanatory power
+- Maintains continuous regression structure
+
+**Cons:**
+
+- Still sensitive to timing irregularities
+- Requires careful interpretation of magnitude
+
+### 8.2 Directional Glucose Prediction (Classification)
+
+The regression task can be further simplified into a classification problem 
+by predicting the direction of glucose change (e.g., increase vs. decrease, or decrease / stable / increase). 
+This reduces sensitivity to measurement noise and focuses on clinically relevant trends.
+
+**Pros:**
+
+- More robust to noise and outliers
+- Enables intuitive evaluation metrics (accuracy, F1-score)
+- Clear decision-oriented interpretation
+
+**Cons:**
+
+- Discards information about change magnitude
+- Requires threshold selection for class boundaries
+
+### 8.3 Glucose Range or Risk-Level Prediction (Ordinal Classification)
+
+Another alternative is to predict discrete glucose ranges 
+(e.g., `< 70` - hypoglycemic, `70 – 140` - normal, `140 – 180` - elevated, `> 180` - high) 
+instead of exact values. This formulation aligns more closely with clinical decision-making 
+and reduces the impact of extreme values.
+
+**Pros:**
+
+- Strong clinical interpretability
+- Less sensitive to extreme measurement errors
+- Naturally supports ordinal or multiclass models
+
+**Cons:**
+
+- Loss of fine-grained numerical detail
+- Class imbalance may require additional handling
+
+---
+
+## 9. References
+
+The proposed improvements and alternative formulations are grounded in established work 
+on medical time-series modeling, robustness to noise, and the inherent uncertainty of glucose dynamics, 
+as summarized in the references below.
+
+[1] Frank, A. (2010). UCI machine learning repository. http://archive.ics.uci.edu/ml.
+<br />**(Reference for the UCI Diabetes dataset used in this project.)**
+
+[2] Shahar, Y. (1997). A framework for knowledge-based temporal abstraction. Artificial intelligence, 90(1-2), 79-133.
+<br />**(Supports the event-based representation and window-based feature construction from irregular medical records.)**
+
+[3] Zeevi, D., Korem, T., Zmora, N., Israeli, D., Rothschild, D., Weinberger, A., ... & Segal, E. (2015). Personalized nutrition by prediction of glycemic responses. Cell, 163(5), 1079-1094.
+<br />**(Demonstrates that blood glucose responses are influenced by many unobserved factors, explaining the intrinsic difficulty of glucose prediction.)**
+
+[4] Contreras, I., & Vehi, J. (2018). Artificial intelligence for diabetes management and decision support: literature review. Journal of medical Internet research, 20(5), e10775.
+<br />**(Provides background on the limitations and challenges of short-term glucose prediction.)**
+
+[5] Breiman, L. (2001). Random forests. Machine learning, 45(1), 5-32.
+<br />**(Theoretical foundation for using Random Forests to model non-linear relationships in supervised learning.)**
+
+[6] Friedman, J. (2009). The elements of statistical learning: Data mining, inference, and prediction. (No Title).
+<br />**(General reference for bias–variance tradeoff, regression behavior, and non-linear models.)**
+
+[7] Galton, F. (1886). Regression towards mediocrity in hereditary stature. The Journal of the Anthropological Institute of Great Britain and Ireland, 15, 246-263.
+<br />**(Original source of the ‘regression to the mean’ phenomenon observed in prediction results.)**
+
+[8] M Bishop, C. (2006). Pattern recognition and machine learning.
+<br />**(Supports alternative problem formulations such as classification and ordinal prediction instead of direct regression.)**
+
+[9] Huber, P. (1981). Robust statistics. new york: John wiley and sons. HuberRobust statistics1981.
+<br />**(Theoretical basis for robustness to noise and the use of outlier mitigation techniques such as IQR clipping.)**
