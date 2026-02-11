@@ -2,7 +2,11 @@
 
 ## 1. Project Overview
 
-[TODO]
+This project investigates the UCI Diabetes dataset through both unsupervised and supervised learning. 
+Irregular, event-based medical records are transformed into structured representations 
+to explore latent behavioral patterns and to predict short-term glucose dynamics. 
+The study emphasizes data preprocessing, robustness to noise, and model interpretability 
+in a real-world healthcare context.
 
 ---
 
@@ -108,3 +112,66 @@ and a **Silhouette score of approximately 0.43**, indicating a well-separated st
 The clusters differ systematically in glucose level and variability, insulin usage, event frequency, 
 and daily activity span, suggesting distinct behavioral–outcome regimes 
 such as stable days, intervention-heavy days, and more volatile patterns.
+
+- Notebook: [unsupervised_learning.ipynb](notebooks/unsupervised_learning.ipynb)
+
+### 6.2 Supervised Learning Results
+
+With `n_estimators = 400` and `min_samples_leaf = 2`, a Random Forest regressor was applied to predict 
+the next blood glucose value using event-window features. The model achieved moderate performance, 
+with an RMSE of approximately 77 on the validation set and 74 on the test set, and R² values around 0.10–0.12. 
+IQR-based denoising led to a small but consistent improvement, indicating limited sensitivity to extreme values. 
+The prediction–actual plots show that the model captures some non-linear structure 
+but still tends to regress toward the mean, suggesting that short-term glucose dynamics remain difficult to model 
+with the current feature representation.
+
+- Notebook: [supervised_learning.ipynb](notebooks/supervised_learning.ipynb)
+
+---
+
+## 7. Data Preprocessing and Statistical Analysis
+
+Prior to both unsupervised and supervised learning, the raw UCI Diabetes event logs underwent systematic preprocessing 
+and validation to ensure data consistency, interpretability, and experimental control.
+
+### 7.1 Data Cleaning and Validation
+
+The original dataset consists of irregular, event-based medical records collected from multiple patients. 
+Several files were found to contain malformed records, including invalid timestamps, missing codes, 
+or non-numeric values where measurements were expected. These files were excluded entirely 
+to avoid introducing ambiguous noise. For the remaining files, records with invalid dates, times, or values 
+were filtered out during parsing.
+
+Event timestamps were normalized to a consistent `HH:MM` format, and all numeric values were explicitly cast to 
+ensure type correctness. This step guarantees that downstream feature construction operates on clean 
+and well-defined inputs.
+
+### 7.2 Feature Construction and Missing Values
+
+For supervised learning, features were constructed from fixed lookback windows 
+preceding each glucose measurement event. Due to the nature of diabetes management data, 
+the absence of certain actions (e.g., insulin administration) within a window is clinically meaningful and expected. 
+Therefore, missing values in selected insulin-related features were filled with zeros 
+rather than treated as invalid samples.
+
+All numerical features were subsequently scaled using min–max normalization to place them on a comparable range, 
+while temporal categorical features (`hour_of_day`, `day_of_week`) were encoded using one-hot encoding. 
+Identifier and timestamp fields were excluded from modeling.
+
+### 7.3 Statistical Analysis
+
+Basic descriptive statistics, including mean, variance, and skewness, were computed for numerical features 
+to examine their distributional properties. Correlation analysis was performed to identify dependencies 
+among features and to assess potential redundancy. Visualizations such as histograms, boxplots, 
+and correlation heatmaps were used to support exploratory analysis and to verify the effects of preprocessing steps.
+
+### 7.4 Noise Injection and Denoising
+
+To evaluate model robustness, synthetic noise was manually injected into a small fraction (1%) of the training data 
+by replacing selected glucose-related values with extreme outliers. This controlled perturbation enables 
+a direct comparison between noisy and denoised training conditions without relying on the original data distribution.
+
+Denoising was performed using an interquartile range (IQR)–based clipping strategy, 
+where values outside ([Q1 − 1.5 \cdot IQR, ; Q3 + 1.5 \cdot IQR]) were clipped to the corresponding bounds. 
+This approach preserves all samples while mitigating the influence of extreme values 
+in a statistically principled manner.
